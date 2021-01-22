@@ -23,6 +23,8 @@ public:
     int getHour();
     int getMin();
     int getSec();
+    String getUTCTime();
+    unsigned long getTimestamp();
 
     DateTime(/* args */);
     ~DateTime();

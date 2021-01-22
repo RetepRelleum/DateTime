@@ -167,32 +167,42 @@ void DateTime::sendNTPpacket(char *packetBuffer, const int NTP_PACKET_SIZE)
 
 int DateTime::getYear()
 {
-  unixtToString(ntpTime + timestamp / 1000);
+  unixtToString(ntpTime +(millis()- timestamp) / 1000);
   return data[0];
 }
 
 int DateTime::getMonth()
 {
-  unixtToString(ntpTime + timestamp / 1000);
+  unixtToString(ntpTime + (millis()- timestamp) / 1000);
   return data[1];
-};
+}
 int DateTime::getDay()
 {
-  unixtToString(ntpTime + timestamp / 1000);
+  unixtToString(ntpTime + (millis()- timestamp) / 1000);
   return data[2];
-};
+}
 int DateTime::getHour()
 {
-  unixtToString(ntpTime + timestamp / 1000);
+  unixtToString(ntpTime + (millis()- timestamp) / 1000);
   return data[3];
-};
+}
 int DateTime::getMin()
 {
-  unixtToString(ntpTime + timestamp / 1000);
+  unixtToString(ntpTime + (millis()- timestamp) / 1000);
   return data[4];
-};
+}
 int DateTime::getSec()
 {
-  unixtToString(ntpTime + timestamp / 1000);
+  unixtToString(ntpTime + (millis()- timestamp) / 1000);
   return data[5];
-};
+}
+
+String DateTime::getUTCTime()
+{
+  return unixtToString(ntpTime + (millis()- timestamp) / 1000);
+}
+
+unsigned long DateTime::getTimestamp()
+{
+  return ntpTime + (millis()- timestamp) / 1000;
+}
