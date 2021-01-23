@@ -206,3 +206,6 @@ unsigned long DateTime::getTimestamp()
 {
   return ntpTime + (millis()- timestamp) / 1000;
 }
+String DateTime::getTimeString(unsigned long t){
+  return unixtToString(t);
+}

@@ -25,6 +25,7 @@ public:
     int getSec();
     String getUTCTime();
     unsigned long getTimestamp();
+    String getTimeString(unsigned long);
 
     DateTime(/* args */);
     ~DateTime();
