@@ -1,6 +1,7 @@
 
 
 #include <DateTime.h>
+using namespace dt;
 
 String url = "";
 unsigned long timeOut = 0;
@@ -9,22 +10,29 @@ long timeSendData = -60000;
 
 WiFiUDP Udp;
 
-DateTime::DateTime(/* args */)
+DateTimes::DateTimes(/* args */)
 {
 }
 
-DateTime::~DateTime()
+DateTimes::~DateTimes()
 {
 }
 
-void DateTime::begin()
+void DateTimes::begin()
 {
-  ntpTime = getTime();
+  while (ntpTime < 1611427410)
+  {
+    ntpTime = getTime();
+    if (ntpTime < 1611427410)
+    {
+      delay(10000);
+    }
+  }
   timestamp = millis();
   Serial.println(unixtToString(ntpTime));
 }
 
-String DateTime::unixtToString(uint32_t t)
+String DateTimes::unixtToString(uint32_t t)
 {
   t = isSommer(t) ? t + 2 * 3600 : t + 3600;
   int wochentag = ((t + 345600) % (604800)) / 86400;
@@ -62,7 +70,7 @@ String DateTime::unixtToString(uint32_t t)
   return String(data[0]) + "-" + (data[1] <= 9 ? "0" + String(data[1]) : String(data[1])) + "-" + (data[2] <= 9 ? "0" + String(data[2]) : String(data[2])) + "T" + (data[3] <= 9 ? "0" + String(data[3]) : String(data[3])) + ":" + (data[4] <= 9 ? "0" + String(data[4]) : String(data[4])) + ":" + (data[5] <= 9 ? "0" + String(data[5]) : String(data[5]));
 }
 
-bool DateTime::isSommer(uint32_t t)
+bool DateTimes::isSommer(uint32_t t)
 {
   int wochentag = ((t + 345600) % (604800)) / 86400;
   t = t / 3600;
@@ -102,7 +110,7 @@ bool DateTime::isSommer(uint32_t t)
   return sommer;
 }
 
-unsigned long DateTime::getTime()
+unsigned long DateTimes::getTime()
 {
   const int NTP_PACKET_SIZE = 48;
   char packetBuffer[50];
@@ -134,7 +142,7 @@ unsigned long DateTime::getTime()
   return 0;
 }
 
-void DateTime::sendNTPpacket(char *packetBuffer, const int NTP_PACKET_SIZE)
+void DateTimes::sendNTPpacket(char *packetBuffer, const int NTP_PACKET_SIZE)
 {
   //Serial.println("1");
   // set all bytes in the buffer to 0
@@ -156,8 +164,8 @@ void DateTime::sendNTPpacket(char *packetBuffer, const int NTP_PACKET_SIZE)
 
   // all NTP fields have been given values, now
   // you can send a packet requesting a timestamp:
-  char adr[] = "ch.pool.ntp.org";
-  Udp.beginPacket(adr, 123); //NTP requests are to port 123
+
+  Udp.beginPacket(adr[random(0, 4)].c_str(), 123); //NTP requests are to port 123
   //Serial.println("4");
   Udp.write((uint8_t *)packetBuffer, NTP_PACKET_SIZE);
   //Serial.println("5");
@@ -165,47 +173,49 @@ void DateTime::sendNTPpacket(char *packetBuffer, const int NTP_PACKET_SIZE)
   //Serial.println("6");
 }
 
-int DateTime::getYear()
+int DateTimes::getYear()
 {
-  unixtToString(ntpTime +(millis()- timestamp) / 1000);
+  unixtToString(ntpTime + (millis() - timestamp) / 1000);
   return data[0];
 }
 
-int DateTime::getMonth()
+int DateTimes::getMonth()
 {
-  unixtToString(ntpTime + (millis()- timestamp) / 1000);
+  unixtToString(ntpTime + (millis() - timestamp) / 1000);
   return data[1];
 }
-int DateTime::getDay()
+int DateTimes::getDay()
 {
-  unixtToString(ntpTime + (millis()- timestamp) / 1000);
+  unixtToString(ntpTime + (millis() - timestamp) / 1000);
   return data[2];
 }
-int DateTime::getHour()
+int DateTimes::getHour()
 {
-  unixtToString(ntpTime + (millis()- timestamp) / 1000);
+  unixtToString(ntpTime + (millis() - timestamp) / 1000);
   return data[3];
 }
-int DateTime::getMin()
+int DateTimes::getMin()
 {
-  unixtToString(ntpTime + (millis()- timestamp) / 1000);
+  unixtToString(ntpTime + (millis() - timestamp) / 1000);
   return data[4];
 }
-int DateTime::getSec()
+int DateTimes::getSec()
 {
-  unixtToString(ntpTime + (millis()- timestamp) / 1000);
+  unixtToString(ntpTime + (millis() - timestamp) / 1000);
   return data[5];
 }
 
-String DateTime::getUTCTime()
+String DateTimes::getUTCTime()
 {
-  return unixtToString(ntpTime + (millis()- timestamp) / 1000);
+  return unixtToString(ntpTime + (millis() - timestamp) / 1000);
 }
 
-unsigned long DateTime::getTimestamp()
+unsigned long DateTimes::getTimestamp()
 {
-  return ntpTime + (millis()- timestamp) / 1000;
+  return ntpTime + (millis() - timestamp) / 1000;
 }
-String DateTime::getTimeString(unsigned long t){
+String DateTimes::getTimeString(unsigned long t)
+{
   return unixtToString(t);
 }
+DateTimes DateTime;
